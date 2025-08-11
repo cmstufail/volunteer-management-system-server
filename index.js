@@ -82,9 +82,9 @@ app.get( '/posts', async ( req, res ) => {
 app.get( '/featured-posts', async ( req, res ) => {
     try {
         const postsCollection = client.db( "volunteerDB" ).collection( "posts" );
-        
-        const query = {}; 
-        
+
+        const query = {};
+
         const cursor = postsCollection.find( query ).sort( { deadline: 1 } ).limit( 8 );
         const result = await cursor.toArray();
         res.send( result );
