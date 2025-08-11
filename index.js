@@ -82,10 +82,10 @@ app.get( '/posts', async ( req, res ) => {
 app.get( '/featured-posts', async ( req, res ) => {
     try {
         const postsCollection = client.db( "volunteerDB" ).collection( "posts" );
-        const today = new Date();
-        today.setHours( 0, 0, 0, 0 );
-        const query = { deadline: { $gte: today } };
-        const cursor = postsCollection.find( query ).sort( { deadline: 1 } ).limit( 6 );
+        
+        const query = {}; 
+        
+        const cursor = postsCollection.find( query ).sort( { deadline: 1 } ).limit( 8 );
         const result = await cursor.toArray();
         res.send( result );
     } catch ( error ) {
