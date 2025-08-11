@@ -6,7 +6,7 @@ const cookieParser = require( 'cookie-parser' );
 const { MongoClient, ServerApiVersion, ObjectId } = require( 'mongodb' );
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5000;
 
 // Middleware
 app.use( cors( {
@@ -99,8 +99,20 @@ app.get( '/post/:id', verifyToken, async ( req, res ) => {
     try {
         const postsCollection = client.db( "volunteerDB" ).collection( "posts" );
         const id = req.params.id;
-        const query = { _id: new ObjectId( id ) };
+
+
+        if ( !ObjectId.isValid( id ) ) {
+            return res.status( 400 ).send( { message: "Invalid ID format" } );
+        }
+
+        const query = { _id: id  };
         const result = await postsCollection.findOne( query );
+
+
+        if ( !result ) {
+            return res.status( 404 ).send( { message: "Post not found" } );
+        }
+
         res.send( result );
     } catch ( error ) {
         console.error( "Error in /post/:id route:", error );
@@ -315,6 +327,22 @@ app.get( '/', ( req, res ) => {
     res.send( 'Volunteer Management System Server is running' );
 } );
 
-app.listen( port, () => {
-    console.log( `Server running on port: ${ port }` );
-} );
+// app.listen( port, () => {
+//     console.log( `Server running on port: ${ port }` );
+// } );
+
+async function run() {
+    try {
+        await client.connect();
+        console.log( 'Connected to MongoDB' );
+
+        app.listen( port, () => {
+            console.log( `Server running on port: ${ port }` );
+        } );
+    } catch ( error ) {
+        console.error( 'MongoDB connection error:', error );
+    }
+}
+
+run();
+
