@@ -105,10 +105,11 @@ app.get( '/post/:id', verifyToken, async ( req, res ) => {
             return res.status( 400 ).send( { message: "Invalid ID format" } );
         }
 
-        const query = { _id: id  };
+        const query = { _id: id };
         const result = await postsCollection.findOne( query );
 
 
+        // Step 3: Post না পেলে 404 রিটার্ন
         if ( !result ) {
             return res.status( 404 ).send( { message: "Post not found" } );
         }
